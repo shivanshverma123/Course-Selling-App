@@ -1,0 +1,6 @@
+#node modules ignore
+node_modules/
+
+# All env's ignored (have to check what are all this .env.* ones)
+.env
+.env.*

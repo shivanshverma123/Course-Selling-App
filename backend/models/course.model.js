@@ -1,0 +1,50 @@
+const db = require("mongoose");
+const Schema = db.Schema;
+const ObjectId = Schema.Types.ObjectId;
+const path = require("path");
+
+const courses = new Schema({
+  title: {
+    type: String,
+    required: true,
+    index: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  thumbnail: {
+    type: String,
+    default: path.join(
+      __dirname,
+      "..",
+      "public",
+      "thumbnails",
+      "dummyThumbnail.jpg",
+    ),
+  },
+  owner: {
+    type: ObjectId,
+    ref: "users",
+    required: true,
+  },
+  rating: {
+    type: Number,
+    default: 0,
+  },
+  details: [
+    {
+      id: String,
+      topic: String,
+      topicDetails: [String],
+    },
+  ],
+});
+
+const courseModel = db.model("courses", courses);
+
+module.exports = courseModel;
