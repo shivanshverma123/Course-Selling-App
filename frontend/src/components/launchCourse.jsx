@@ -13,7 +13,11 @@ export default function LaunchCourse(props) {
     details: [
       { id: Date.now(), topic: "", topicDetails: "" },
       { duration: "" },
-      { instructors: [] },
+      {
+        instructors: [
+          { id: crypto.randomUUID(), name: "", description: "", dpfile: "" },
+        ],
+      },
     ],
   });
 
@@ -58,7 +62,10 @@ export default function LaunchCourse(props) {
           id="mainCard"
           onClick={(e) => e.stopPropagation()}
         >
-          <form className="flex flex-col gap-10 h-full" onSubmit={submitForm}>
+          <form
+            className="flex flex-col gap-10 h-full items-center md:items-stretch"
+            onSubmit={submitForm}
+          >
             <div className="text-3xl font-semibold mx-auto font-medium mb-10">
               Launch New Course
             </div>
@@ -68,7 +75,7 @@ export default function LaunchCourse(props) {
             {sections == 1 && (
               <>
                 <label
-                  className="flex flex-row justify-center items-center gap-5 bg-red-500 p-3 text-white rounded-lg w-2/3"
+                  className="flex flex-col md:flex-row justify-center items-center gap-5 bg-red-500 p-3 text-white rounded-lg w-2/3"
                   htmlFor={"fileUpload"}
                 >
                   Choose File To Upload
@@ -80,7 +87,7 @@ export default function LaunchCourse(props) {
                   />
                 </label>
 
-                <label className="flex flex-row gap-5 items-center font-medium">
+                <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
                   Course Title :
                   <input
                     type={"text"}
@@ -93,7 +100,7 @@ export default function LaunchCourse(props) {
                     }
                   />
                 </label>
-                <label className="flex flex-row gap-5 items-center font-medium">
+                <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
                   Course Description :
                   <textarea
                     className="border border-slate-200 font-light md:h-30 md:w-70 rounded-lg flex-1 p-3"
@@ -106,7 +113,7 @@ export default function LaunchCourse(props) {
                     placeholder="Enter description of you course"
                   ></textarea>
                 </label>
-                <label className="flex flex-row gap-5 items-center font-medium">
+                <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
                   Course Price :
                   <input
                     type={"text"}
@@ -138,7 +145,7 @@ export default function LaunchCourse(props) {
                   }));
                 }}
               >
-                Add Course Detials
+                Add Course Details
                 <img
                   src={addDetail}
                   alt={"addCourseDetails"}
@@ -163,7 +170,12 @@ export default function LaunchCourse(props) {
             ) : null}
 
             {/* Course Instructor and Duration Detail -------- Section-3  */}
-            {sections == 3 && <AddAdditionalDetail />}
+            {sections == 3 && (
+              <AddAdditionalDetail
+                courseDetail={courseDetail}
+                setCourseDetail={setCourseDetail}
+              />
+            )}
             {/* Fixed Controller Buttons -------------- */}
 
             <div className="flex flex-row justify-between">
@@ -223,7 +235,7 @@ function AddDetail(props) {
       >
         <img src={closeIcon} alt="closeIcon" className="rounded-2xl h-5 w-5" />
       </button>
-      <label className="flex flex-row gap-5 items-center font-medium">
+      <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
         Detail Title:-
         <input
           type={"text"}
@@ -241,7 +253,7 @@ function AddDetail(props) {
           }
         />
       </label>
-      <label className="flex flex-row gap-5 items-center font-medium">
+      <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
         Detail Description:-
         <textarea
           placeholder="If you are entering topics please seperate those topics by commas or paragraph description will work fine as well."
@@ -278,6 +290,7 @@ function AddAdditionalDetail(props) {
               ],
             };
           }
+          return det;
         }),
       };
     });
@@ -286,7 +299,7 @@ function AddAdditionalDetail(props) {
   return (
     <>
       <div className="flex flex-col gap-10 p-5">
-        <label className="flex flex-row gap-5 items-center font-medium">
+        <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
           Course Duration (In hrs) :
           <input
             type={"text"}
@@ -307,24 +320,167 @@ function AddAdditionalDetail(props) {
             }
           />
         </label>
-        <button type="button" onClick={addInstructors}>
-          Add Instructor
-        </button>
+        <div
+          className="flex justify-center items-center gap-10 bg-slate-900 rounded-xl p-3 h-auto text-md text-white"
+          onClick={addInstructors}
+        >
+          Add Instructor Details
+          <img
+            src={addDetail}
+            alt={"addCourseDetails"}
+            className="h-7 w-7 rounded-lg"
+          />
+        </div>
+        {props.courseDetail.details.map((det) => {
+          if (det.instructors) {
+            return det.instructors.map((inst) => {
+              return (
+                <InstructorDetail
+                  key={inst.id}
+                  id={inst.id}
+                  setCourseDetail={props.setCourseDetail}
+                />
+              );
+            });
+          }
+          return null;
+        })}
       </div>
     </>
   );
 }
 
-function InstructorDetail() {
+function InstructorDetail(props) {
+  function saveInstructorDp(e) {
+    props.setCourseDetail((prev) => {
+      let dp = e.target.files[0];
+      return {
+        ...prev,
+        details: prev.details.map((det) => {
+          if (det.instructors) {
+            return {
+              ...det,
+              instructors: det.instructors.map((ins) => {
+                if (ins.id === props.id) {
+                  return {
+                    ...ins,
+                    dpfile: dp,
+                  };
+                }
+                return ins;
+              }),
+            };
+          }
+          return det;
+        }),
+      };
+    });
+  }
+
+  function saveInstructorName(e) {
+    props.setCourseDetail((prev) => {
+      return {
+        ...prev,
+        details: prev.details.map((det) => {
+          if (det.instructors) {
+            return {
+              ...det,
+              instructors: det.instructors.map((ins) => {
+                if (ins.id === props.id) {
+                  return {
+                    ...ins,
+                    name: e.target.value,
+                  };
+                }
+                return ins;
+              }),
+            };
+          }
+          return det;
+        }),
+      };
+    });
+  }
+
+  function saveInstructorDescription(e) {
+    props.setCourseDetail((prev) => {
+      return {
+        ...prev,
+        details: prev.details.map((det) => {
+          if (det.instructors) {
+            return {
+              ...det,
+              instructors: det.instructors.map((ins) => {
+                if (ins.id === props.id) {
+                  return {
+                    ...ins,
+                    description: e.target.value,
+                  };
+                }
+                return ins;
+              }),
+            };
+          }
+          return det;
+        }),
+      };
+    });
+  }
+
+  function deleteInstructorDetail(e) {
+    props.setCourseDetail((prev) => {
+      return {
+        ...prev,
+        details: prev.details.map((det) => {
+          if (det.instructors) {
+            return {
+              ...det,
+              instructors: det.instructors.filter((ins) => ins.id !== props.id),
+            };
+          }
+          return det;
+        }),
+      };
+    });
+  }
+
   return (
-    <div>
-      <label className="flex flex-col gap-10 p-5">
-        Instructor name :
-        <input type="text" />
+    <div className="flex flex-col gap-10 p-5 pt-13 border border-slate-200 rounded-lg w-auto relative">
+      <button
+        type="button"
+        className="absolute top-3 right-3"
+        onClick={deleteInstructorDetail}
+      >
+        <img src={closeIcon} alt="closeIcon" className="rounded-2xl h-5 w-5" />
+      </button>
+      <label
+        className="flex flex-col md:flex-row justify-center items-center gap-5 bg-red-500 p-3 text-white rounded-lg"
+        htmlFor={"dpUpload"}
+      >
+        Choose dp To Upload
+        <input
+          type={"file"}
+          className="border border-slate-200 font-light font-medium rounded-lg hidden"
+          id="dpUpload"
+          name="InstructorThumbnail"
+          onChange={saveInstructorDp}
+        />
       </label>
-      <label>
-        Select Instructor dp :
-        <input type="file" name="instructorThumbnail" />
+      <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
+        Instructor Name :
+        <input
+          type={"text"}
+          className="border border-slate-200 font-light rounded-lg flex-1 p-2"
+          onChange={saveInstructorName}
+        />
+      </label>
+      <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
+        Detail Description:-
+        <textarea
+          placeholder="Enter Instructor Bio"
+          className="border border-slate-200 font-light md:h-30 md:w-70 rounded-lg flex-1 p-3"
+          onChange={saveInstructorDescription}
+        ></textarea>
       </label>
     </div>
   );

@@ -8,7 +8,7 @@ function Signin(props) {
     email: "",
     username: "",
     password: "",
-    userType: props.role,
+    userType: "admin",
   });
 
   const [schemaValidationError, setSchemaValidationError] = useState({
@@ -48,7 +48,6 @@ function Signin(props) {
     setUserDetail((prev) => ({
       ...prev,
       email: e.target.value,
-      userType: props.role,
     }));
 
     timer.current.emailTimer = setTimeout(() => {
@@ -70,7 +69,6 @@ function Signin(props) {
     setUserDetail((prev) => ({
       ...prev,
       username: e.target.value,
-      userType: props.role,
     }));
 
     timer.current.usernameTimer = setTimeout(() => {
@@ -96,7 +94,6 @@ function Signin(props) {
     setUserDetail((prev) => ({
       ...prev,
       password: e.target.value,
-      userType: props.role,
     }));
 
     timer.current.passwordTimer = setTimeout(() => {
@@ -148,8 +145,8 @@ function Signin(props) {
   async function submitSignupForm(e) {
     e.preventDefault();
     let schemaValidation = signupSchema.safeParse(userDetail);
-    console.log("Schema Validaton:-", schemaValidation);
     if (schemaValidation.success) {
+      props.setRole(userDetail.userType);
       try {
         let response = await fetch("http://localhost:3000/auth/signup", {
           method: "POST",
@@ -194,7 +191,9 @@ function Signin(props) {
               ? "Didn't have an account?"
               : "Already have and account?"}
             <span
-              onClick={(e) => setSigninFlag((prev) => !prev)}
+              onClick={(e) => {
+                setSigninFlag((prev) => !prev);
+              }}
               className="text-purple-500 hover:text-purple-800"
             >
               {signinFlag ? "SignUp" : "SignIn"}
@@ -206,11 +205,16 @@ function Signin(props) {
               : "Want to buy courses?"}
             <span
               onClick={(e) =>
-                props.setRole((prev) => (prev === "user" ? "admin" : "user"))
+                setUserDetail((prev) => {
+                  return {
+                    ...prev,
+                    userType: prev.userType === "admin" ? "user" : "admin",
+                  };
+                })
               }
               className="text-purple-500 hover:text-purple-800"
             >
-              {props.role === "user" ? "Sell Courses" : "Buy Courses"}
+              {userDetail.userType === "user" ? "Sell Courses" : "Buy Courses"}
             </span>
           </div>
           {signinFlag ? "or" : null}
