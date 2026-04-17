@@ -4,21 +4,6 @@ const courseModel = require("../models/course.model");
 async function newCourseLaunch(req, res) {
   let { title, description, price, details } = req.body;
   details = JSON.parse(details);
-  // details = details.map((det) => {
-  //   return {
-  //     ...det,
-  //     topicDetails: det?.topicDetails?.split(",").map((mapDet) => {
-  //       if (mapDet) {
-  //         let trimmedString = mapDet.trim();
-  //         let formattedString =
-  //           trimmedString.charAt(0).toUpperCase() +
-  //           trimmedString.slice(1).toLowerCase();
-  //         return formattedString;
-  //       }
-  //     }),
-  //   };
-  // });
-  // console.log(details);
   let duration;
   let instructors = {};
   let courseDescription = [];
@@ -35,9 +20,15 @@ async function newCourseLaunch(req, res) {
         };
       });
     } else if (det.id) {
+      let descriptionArray = det.topicDetials.split(",").map((det) => {
+        let cleanUpStr = det.trim();
+        cleanUpStr =
+          cleanUpStr[0].toUpperCase() + cleanUpStr.slice(1).toLowerCase();
+        return cleanUpStr;
+      });
       let temp = {
         topic: det.topic,
-        description: det.topicDetails,
+        description: descriptionArray,
       };
       courseDescription.push(temp);
     }
