@@ -4,7 +4,7 @@ const upload = require("../middlewares/thumbnailUpload.mdw");
 
 launchCourseRouter.post(
   "/create-new-course",
-  upload.fields(
+  upload.fields([
     {
       name: "thumbnailFile",
       maxCount: 1,
@@ -13,7 +13,7 @@ launchCourseRouter.post(
       name: "instructorDp",
       maxCount: 10,
     },
-  ),
+  ]),
   newCourseLaunch,
 );
 

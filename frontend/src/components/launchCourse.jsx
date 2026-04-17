@@ -10,9 +10,10 @@ export default function LaunchCourse(props) {
     title: "",
     description: "",
     price: "",
+    courseThumbnail: "",
     details: [
       { id: Date.now(), topic: "", topicDetails: "" },
-      { duration: "" },
+      { duration: "1" },
       {
         instructors: [
           { id: crypto.randomUUID(), name: "", description: "", dpfile: "" },
@@ -27,20 +28,24 @@ export default function LaunchCourse(props) {
     e.preventDefault();
     let formData = new FormData();
 
-    let fileInput = e.target.CourseThumbnail;
-    let file = fileInput.files[0];
-
     formData.append("title", courseDetail.title);
     formData.append("description", courseDetail.description);
     formData.append("price", courseDetail.price);
     formData.append("details", JSON.stringify(courseDetail.details));
-    formData.append("thumbnailFile", file);
+    formData.append("thumbnailFile", courseDetail.courseThumbnail);
     courseDetail.details.forEach((det) => {
       if (det.instructors) {
         det.instructors.forEach((ins) => {
+          console.log("loggin name from ins:-", ins.name);
+          console.log("loggin name from ins:-", ins.dpfile);
+
           if (ins.name) {
             let ext = ins.dpfile.name.split(".").pop();
-            formData.append("instructorDp", ins.dpfile, `${ins.id}.${ext}`);
+            formData.append(
+              "instructorDp",
+              ins.dpfile,
+              `${ins.id}_${Date.now()}.${ext}`,
+            );
           }
         });
       }
@@ -94,6 +99,11 @@ export default function LaunchCourse(props) {
                     className="border border-slate-200 font-light font-medium rounded-lg hidden"
                     id="fileUpload"
                     name="CourseThumbnail"
+                    onChange={(e) =>
+                      setCourseDetail((prev) => {
+                        return { ...prev, courseThumbnail: e.target.files[0] };
+                      })
+                    }
                   />
                 </label>
 
@@ -108,6 +118,7 @@ export default function LaunchCourse(props) {
                         title: e.target.value,
                       }))
                     }
+                    value={courseDetail.title}
                   />
                 </label>
                 <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
@@ -120,6 +131,7 @@ export default function LaunchCourse(props) {
                         description: e.target.value,
                       }))
                     }
+                    value={courseDetail.description}
                     placeholder="Enter description of you course"
                   ></textarea>
                 </label>
@@ -134,6 +146,7 @@ export default function LaunchCourse(props) {
                         price: e.target.value,
                       }))
                     }
+                    value={courseDetail.price}
                   />
                 </label>
               </>
@@ -164,14 +177,17 @@ export default function LaunchCourse(props) {
               </div>
             )}
             {sections == 2 ? (
-              courseDetail.details.length > 0 ? (
-                courseDetail.details.map((detail) => (
-                  <AddDetail
-                    key={detail.id}
-                    id={detail.id}
-                    setCourseDetail={setCourseDetail}
-                  />
-                ))
+              courseDetail.details.some((det) => det.id) > 0 ? (
+                courseDetail.details
+                  .filter((det) => det.id)
+                  .map((det) => (
+                    <AddDetail
+                      key={det.id}
+                      id={det.id}
+                      courseDetail={courseDetail}
+                      setCourseDetail={setCourseDetail}
+                    />
+                  ))
               ) : (
                 <div className="flex justify-center items-center min-w-[55vh] border border-slate-200 rounded-lg p-10 relative">
                   Please Add Course Details.
@@ -261,6 +277,9 @@ function AddDetail(props) {
               }),
             }))
           }
+          value={
+            props.courseDetail.details.find((det) => det.id === props.id).topic
+          }
         />
       </label>
       <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
@@ -279,6 +298,10 @@ function AddDetail(props) {
               }),
             }))
           }
+          value={
+            props.courseDetail.details.find((det) => det.id === props.id)
+              .topicDetails
+          }
         ></textarea>
       </label>
     </div>
@@ -296,7 +319,12 @@ function AddAdditionalDetail(props) {
               ...det,
               instructors: [
                 ...det.instructors,
-                { id: crypto.randomUUID(), name: "", description: "" },
+                {
+                  id: crypto.randomUUID(),
+                  name: "",
+                  description: "",
+                  dpfile: "",
+                },
               ],
             };
           }
@@ -315,7 +343,7 @@ function AddAdditionalDetail(props) {
             type={"text"}
             className="border border-slate-200 font-light rounded-lg flex-1 p-2"
             onChange={(e) =>
-              setCourseDetail((prev) => ({
+              props.setCourseDetail((prev) => ({
                 ...prev,
                 details: prev.details.map((det) => {
                   if (det.duration) {
@@ -327,6 +355,9 @@ function AddAdditionalDetail(props) {
                   return det;
                 }),
               }))
+            }
+            value={
+              props.courseDetail.details.filter((det) => det.duration).duration
             }
           />
         </label>
@@ -348,6 +379,7 @@ function AddAdditionalDetail(props) {
                 <InstructorDetail
                   key={inst.id}
                   id={inst.id}
+                  courseDetail={props.courseDetail}
                   setCourseDetail={props.setCourseDetail}
                 />
               );
@@ -364,6 +396,7 @@ function InstructorDetail(props) {
   function saveInstructorDp(e) {
     props.setCourseDetail((prev) => {
       let dp = e.target.files[0];
+      console.log("Priting dp in fn:- ", dp);
       return {
         ...prev,
         details: prev.details.map((det) => {
@@ -465,13 +498,13 @@ function InstructorDetail(props) {
       </button>
       <label
         className="flex flex-col md:flex-row justify-center items-center gap-5 bg-red-500 p-3 text-white rounded-lg"
-        htmlFor={"dpUpload"}
+        // htmlFor={"dpUpload"}
       >
         Choose dp To Upload
         <input
           type={"file"}
           className="border border-slate-200 font-light font-medium rounded-lg hidden"
-          id="dpUpload"
+          // id="dpUpload"
           name="InstructorThumbnail"
           onChange={saveInstructorDp}
         />
@@ -482,6 +515,11 @@ function InstructorDetail(props) {
           type={"text"}
           className="border border-slate-200 font-light rounded-lg flex-1 p-2"
           onChange={saveInstructorName}
+          value={
+            props.courseDetail.details
+              .find((det) => det.instructors)
+              .instructors.find((ins) => ins.id === props.id).name
+          }
         />
       </label>
       <label className="flex flex-col md:flex-row gap-5 items-center font-medium">
@@ -490,6 +528,11 @@ function InstructorDetail(props) {
           placeholder="Enter Instructor Bio"
           className="border border-slate-200 font-light md:h-30 md:w-70 rounded-lg flex-1 p-3"
           onChange={saveInstructorDescription}
+          value={
+            props.courseDetail.details
+              .find((det) => det.instructors)
+              .instructors.find((ins) => ins.id === props.id).description
+          }
         ></textarea>
       </label>
     </div>

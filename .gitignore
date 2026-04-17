@@ -4,3 +4,13 @@ node_modules/
 # All env's ignored (have to check what are all this .env.* ones)
 .env
 .env.*
+
+#All static files in backend public
+backend/public/thumbnails/*
+!backend/public/thumbnails/.gitkeep
+backend/public/instructorDp/*
+!backend/public/instructorDp/.gitkeep
+
+#All static file in fronend public
+frontend/public/*
+!fronend/public/.gitkeep

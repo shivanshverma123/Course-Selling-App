@@ -11,6 +11,9 @@ const instructorSchema = new Schema({
   description: {
     type: String,
   },
+  dp: {
+    type: String,
+  },
 });
 
 const courses = new Schema({
