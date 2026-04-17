@@ -34,7 +34,17 @@ export default function LaunchCourse(props) {
     formData.append("description", courseDetail.description);
     formData.append("price", courseDetail.price);
     formData.append("details", JSON.stringify(courseDetail.details));
-    formData.append("file", file);
+    formData.append("thumbnailFile", file);
+    courseDetail.details.forEach((det) => {
+      if (det.instructors) {
+        det.instructors.forEach((ins) => {
+          if (ins.name) {
+            let ext = ins.dpfile.name.split(".").pop();
+            formData.append("instructorDp", ins.dpfile, `${ins.id}.${ext}`);
+          }
+        });
+      }
+    });
 
     let response = await fetch("http://localhost:3000/api/create-new-course", {
       method: "POST",

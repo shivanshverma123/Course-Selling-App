@@ -3,6 +3,16 @@ const Schema = db.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const path = require("path");
 
+const instructorSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+});
+
 const courses = new Schema({
   title: {
     type: String,
@@ -36,11 +46,24 @@ const courses = new Schema({
     type: Number,
     default: 0,
   },
+  duration: {
+    type: Number,
+    required: true,
+  },
+  instructors: {
+    type: Map,
+    of: instructorSchema,
+  },
   details: [
     {
-      id: String,
-      topic: String,
-      topicDetails: [String],
+      topic: {
+        type: String,
+        required: true,
+      },
+      description: {
+        type: String,
+        required: true,
+      },
     },
   ],
 });
