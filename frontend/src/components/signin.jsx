@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { z } from "zod";
 import showPasswordLogo from "../assets/showPassword.png";
 import hidePasswordLogo from "../assets/hidePassword.png";
+import { useNavigate, Link } from "react-router-dom";
 
 function Signin(props) {
+  const navigate = useNavigate();
   const [userDetail, setUserDetail] = useState({
     email: "",
     username: "",
@@ -19,8 +21,8 @@ function Signin(props) {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [signinFlag, setSigninFlag] = useState(true);
-
+  // const [signinFlag, setSigninFlag] = useState(true);
+  const signinFlag = props.mode === "signin";
   const [signInFailed, setSignInFailed] = useState({});
   const [signUpFailed, setSignUpFailed] = useState({});
 
@@ -157,7 +159,7 @@ function Signin(props) {
         });
         let responseBody = await response.json();
         if (response.status === 200) {
-          setSigninFlag(true);
+          navigate("/signin");
         } else {
           setSignUpFailed({
             message: "It's not you it's us, please try again after sometimes.",
@@ -190,18 +192,17 @@ function Signin(props) {
             {signinFlag
               ? "Didn't have an account?"
               : "Already have and account?"}
-            <span
-              onClick={(e) => {
-                setSigninFlag((prev) => !prev);
-              }}
-              className="text-purple-500 hover:text-purple-800"
-            >
-              {signinFlag ? "SignUp" : "SignIn"}
+            <span className="text-purple-500 hover:text-purple-800">
+              {signinFlag ? (
+                <Link to="/signup">"SignUp"</Link>
+              ) : (
+                <Link to="/signin">"SignIn"</Link>
+              )}
             </span>
           </div>
           <div className="text-sm">
-            {props.role === "user"
-              ? "Want to be a teacher?"
+            {userDetail.userType === "user"
+              ? "Want to sell courses?"
               : "Want to buy courses?"}
             <span
               onClick={(e) =>

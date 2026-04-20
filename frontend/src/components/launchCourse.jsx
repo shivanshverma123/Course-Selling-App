@@ -496,15 +496,11 @@ function InstructorDetail(props) {
       >
         <img src={closeIcon} alt="closeIcon" className="rounded-2xl h-5 w-5" />
       </button>
-      <label
-        className="flex flex-col md:flex-row justify-center items-center gap-5 bg-red-500 p-3 text-white rounded-lg"
-        // htmlFor={"dpUpload"}
-      >
+      <label className="flex flex-col md:flex-row justify-center items-center gap-5 bg-red-500 p-3 text-white rounded-lg">
         Choose dp To Upload
         <input
           type={"file"}
           className="border border-slate-200 font-light font-medium rounded-lg hidden"
-          // id="dpUpload"
           name="InstructorThumbnail"
           onChange={saveInstructorDp}
         />

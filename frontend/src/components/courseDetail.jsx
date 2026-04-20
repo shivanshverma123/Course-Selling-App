@@ -1,4 +1,4 @@
-export default function CourseDetials() {
+export default function CourseDetails() {
   return (
     <>
       <div className="min-h-screen h-auto w-screen">
@@ -24,7 +24,10 @@ export default function CourseDetials() {
             </div>
           </div>
           <div className="flex flex-col border border-slate-300 rounded-lg h-fit mt-3 lg:sticky lg:top-10">
-            <img src="https://placehold.co/400x300" className="rounded-lg h-auto w-auto" />
+            <img
+              src="https://placehold.co/400x300"
+              className="rounded-lg h-auto w-auto"
+            />
             <div className="flex flex-col justify-center items-center bg-white gap-10 h-fit">
               <div className="p-1">Purchase Detail</div>
               <button className="border border-slate-200 rounded bg-sky-400 hover:bg-sky-600 hover text-white w-full p-1">

@@ -16,7 +16,8 @@ function Route(props) {
     <>
       <BrowserRouter>
         <Routes element={Layout}>
-          <Route path={"/signin"} element={Signin} />
+          <Route path={"/signin"} element={Signin} mode={"signin"} />
+          <Route path={"/signup"} element={Signin} mode={"signup"} />
           {path.map((path) => {
             <Route path={path} element={Cards} />;
           })}
