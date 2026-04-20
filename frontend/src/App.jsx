@@ -17,12 +17,8 @@ let api = axios.create({
 function App() {
   const [courses, setCourses] = useState([]);
   const [publishNewCourse, setPublishNewCourse] = useState(false);
-  const [userSignIn, setUserSignin] = useState(
-    localStorage.getItem("token") ? true : false,
-  );
-  const [role, setRole] = useState(
-    userSignIn ? jwtDecode(localStorage.getItem("token")).userType : null,
-  );
+  const [userSignIn, setUserSignin] = useState(false);
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     if (!publishNewCourse && userSignIn) {
@@ -36,6 +32,10 @@ function App() {
       //   .then((response) => {
       //     setCourses((prev) => [...response.courses]);
       //   });
+      api.get("/auth/me").then((res) => {
+        setUserSignin((prev) => res.data.isAuthenticated);
+        setRole((prev) => res.data.userType || null);
+      });
       api
         .get("/api/getAllCourse")
         .then((res) => setCourses((prev) => [...res.data.courses]));

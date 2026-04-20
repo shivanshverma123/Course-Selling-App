@@ -19,6 +19,7 @@ function authenticate(req, res, next) {
       } else {
         return res.status(403).json({
           message: "User not authenticated, Please signIn again.",
+          isAuthenticated: false,
         });
       }
 
@@ -26,6 +27,7 @@ function authenticate(req, res, next) {
     } catch (err) {
       res.status(403).json({
         message: "Bad Token, Retry signIn.",
+        isAuthenticated: false,
       });
     }
   }

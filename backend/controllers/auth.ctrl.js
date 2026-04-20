@@ -156,7 +156,19 @@ let userSignin = async (req, res) => {
   }
 };
 
+let userStateData = async (req, res) => {
+  // let userData = await userModel.findOne({
+  //   id: req.currUser.id,
+  // });
+
+  res.json({
+    userType: req.currUser.userType,
+    isAuthenticated: true,
+  });
+};
+
 module.exports = {
   userSignin,
   userSignup,
+  userStateData,
 };
