@@ -91,12 +91,19 @@ let userSignin = async (req, res) => {
           userType: userData.userType,
         },
         JWT_SECRET,
+        {
+          expiresIn: "5min",
+        },
       );
 
       if (passCheck) {
+        res.cookie("token", userToken, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "lax",
+        });
         return res.json({
           message: "User SignIn Succesfull",
-          token: userToken,
           userType: userData.userType,
         });
       } else {

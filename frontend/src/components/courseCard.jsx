@@ -1,21 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 import closeIconLogo from "../assets/closeIcon.png";
+import { api } from "../App";
 
 export default function Cards(props) {
   const [deleteCourse, setDeleteCourse] = useState(false);
 
   async function deleteCourseRequest(e) {
-    let response = await fetch(
-      `http://localhost:3000/api/deleteCourse/${props.id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      },
-    );
-    response = await response.json();
-    props.setCourses([...response.courses]);
+    // let response = await fetch(
+    //   `http://localhost:3000/api/deleteCourse/${props.id}`,
+    //   {
+    //     method: "DELETE",
+    //     headers: {
+    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //     },
+    //   },
+    // );
+    let response = await api.delete(`/api/deleteCourse/${props.id}`);
+    // response = await response.json();
+    props.setCourses([...response.data.courses]);
   }
 
   return (
@@ -78,5 +80,3 @@ export default function Cards(props) {
     </>
   );
 }
-
-

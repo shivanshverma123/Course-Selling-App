@@ -4,6 +4,8 @@ import showPasswordLogo from "../assets/showPassword.png";
 import hidePasswordLogo from "../assets/hidePassword.png";
 import { useNavigate, Link } from "react-router-dom";
 
+import { api } from "../App";
+
 function Signin(props) {
   const navigate = useNavigate();
   const [userDetail, setUserDetail] = useState({
@@ -120,21 +122,20 @@ function Signin(props) {
     e.preventDefault();
     try {
       if (userDetail.email !== "" && userDetail.password !== "") {
-        const response = await fetch("http://localhost:3000/auth/signin", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userDetail),
-        });
-        const responseBody = await response.json();
+        // const response = await fetch("http://localhost:3000/auth/signin", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(userDetail),
+        // });
+        // const responseBody = await response.json();
+        let response = await api.post("/auth/signin", userDetail);
         if (response.status === 200) {
-          const token = responseBody?.token;
-          localStorage.setItem("token", token);
-          props.setRole((prev) => responseBody.userType);
+          props.setRole((prev) => response.data.userType);
           props.setUserSignin((prev) => true);
         } else {
-          setSignInFailed(responseBody);
+          setSignInFailed(response);
         }
       }
     } catch (err) {
@@ -150,14 +151,14 @@ function Signin(props) {
     if (schemaValidation.success) {
       props.setRole(userDetail.userType);
       try {
-        let response = await fetch("http://localhost:3000/auth/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userDetail),
-        });
-        let responseBody = await response.json();
+        // let response = await fetch("http://localhost:3000/auth/signup", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(userDetail),
+        // });
+        let response = await api.post("/auth/signup", userDetail);
         if (response.status === 200) {
           navigate("/signin");
         } else {

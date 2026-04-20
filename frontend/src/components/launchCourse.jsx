@@ -4,6 +4,8 @@ import closeIcon from "../assets/closeIcon.png";
 import leftArrowIcon from "../assets/leftArrowIcon.png";
 import rightArrowIcon from "../assets/rightArrowIcon.png";
 
+import { api } from "../App";
+
 export default function LaunchCourse(props) {
   const [courseDetail, setCourseDetail] = useState({
     id: `${Date.now()}`,
@@ -51,15 +53,16 @@ export default function LaunchCourse(props) {
       }
     });
 
-    let response = await fetch("http://localhost:3000/api/create-new-course", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: formData,
-    });
+    // let response = await fetch("http://localhost:3000/api/create-new-course", {
+    //   method: "POST",
+    //   headers: {
+    //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //   },
+    //   body: formData,
+    // });
+    let response = await api.post("/api/create-new-course", formData);
 
-    console.log("formData Response:-", response);
+    console.log("formData Response:-", response.data);
     props.setCourses((prev) => [...prev, courseDetail]);
     props.setPublishNewCourse(false);
   }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import axios from "axios";
 import Navbar from "./components/navbar";
 import Cards from "./components/courseCard";
 import LaunchCourse from "./components/launchCourse";
@@ -7,6 +8,11 @@ import Signin from "./components/signin";
 import { jwtDecode } from "jwt-decode";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import CourseDetials from "./components/courseDetail";
+
+let api = axios.create({
+  baseURL: "http://localhost:3000/",
+  withCredentials: true,
+});
 
 function App() {
   const [courses, setCourses] = useState([]);
@@ -20,16 +26,19 @@ function App() {
 
   useEffect(() => {
     if (!publishNewCourse && userSignIn) {
-      fetch("http://localhost:3000/api/getAllCourse", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          setCourses((prev) => [...response.courses]);
-        });
+      // fetch("http://localhost:3000/api/getAllCourse", {
+      //   method: "GET",
+      //   headers: {
+      //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+      //   },
+      // })
+      //   .then((response) => response.json())
+      //   .then((response) => {
+      //     setCourses((prev) => [...response.courses]);
+      //   });
+      api
+        .get("/api/getAllCourse")
+        .then((res) => setCourses((prev) => [...res.data.courses]));
     }
   }, [publishNewCourse, userSignIn]);
 
@@ -81,4 +90,5 @@ function App() {
   );
 }
 
+export { api };
 export default App;
