@@ -134,6 +134,7 @@ function Signin(props) {
         if (response.status === 200) {
           props.setRole((prev) => response.data.userType);
           props.setUserSignin((prev) => true);
+          navigate("/home");
         } else {
           setSignInFailed(response);
         }

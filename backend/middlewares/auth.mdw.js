@@ -11,7 +11,7 @@ function authenticate(req, res, next) {
     next();
   } else {
     try {
-      let token = req.cookie("token");
+      let token = req.cookies.token;
       if (token) {
         let verifiedData = jwt.verify(token, jwt_secret);
         req.currUser = verifiedData;

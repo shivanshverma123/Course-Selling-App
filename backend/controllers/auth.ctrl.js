@@ -91,9 +91,6 @@ let userSignin = async (req, res) => {
           userType: userData.userType,
         },
         JWT_SECRET,
-        {
-          expiresIn: "5min",
-        },
       );
 
       if (passCheck) {
@@ -133,6 +130,11 @@ let userSignin = async (req, res) => {
       );
 
       if (passCheck) {
+        res.cookie("token", userToken, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "lax",
+        });
         return res.json({
           message: "User SignIn Succesfull",
           token: userToken,
@@ -161,6 +163,7 @@ let userStateData = async (req, res) => {
   //   id: req.currUser.id,
   // });
 
+  console.log("Yes Response Reaching here");
   res.json({
     userType: req.currUser.userType,
     isAuthenticated: true,

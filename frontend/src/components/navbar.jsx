@@ -5,7 +5,7 @@ export default function Navbar(props) {
   const [accountModelVisible, setAccountModelVisible] = useState(false);
 
   function logoutUser() {
-    localStorage.removeItem("token");
+    
     setAccountModelVisible(false);
     props.setUserSignin((prev) => false);
     props.setCourses([]);

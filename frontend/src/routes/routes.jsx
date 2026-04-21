@@ -1,11 +1,30 @@
-import { useState, useRef } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Signin } from "../components/signin";
-import { Navbar } from "../components/navbar";
-import { Cards } from "../components/courseCard";
-import { LaunchCourse } from "../components/launchCourse";
+import { useState, useRef, Children } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Outlet,
+  Navigate,
+} from "react-router-dom";
+import Signin from "../components/signin";
+import Navbar from "../components/navbar";
+import Cards from "../components/courseCard";
+import LaunchCourse from "../components/launchCourse";
+import LoadingSpinner from "../components/loadingSpinner";
 
-function Route(props) {
+function ProtectedRoute(props) {
+  if (props.loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!props.userSignIn) {
+    return <Navigate to="/signin" />;
+  }
+
+  return <Outlet />;
+}
+
+function Routing(props) {
   const path = ["/", "/home", "/dashboard"];
   const adminPath = [
     "/launchCourse",
@@ -15,19 +34,65 @@ function Route(props) {
   return (
     <>
       <BrowserRouter>
-        <Routes element={Layout}>
-          <Route path={"/signin"} element={Signin} mode={"signin"} />
-          <Route path={"/signup"} element={Signin} mode={"signup"} />
-          {path.map((path) => {
-            <Route path={path} element={Cards} />;
-          })}
-          {adminPath.map((path) => {
-            <Route path={path} element={LaunchCourse} />;
-          })}
+        <Routes>
+          <Route
+            path={"/signin"}
+            element={
+              <Signin
+                mode={"signin"}
+                setRole={props.setRole}
+                setUserSignin={props.setUserSignin}
+              />
+            }
+          />
+          <Route
+            path={"/signup"}
+            element={
+              <Signin
+                mode={"signup"}
+                setRole={props.setRole}
+                setUserSignin={props.setUserSignin}
+              />
+            }
+          />
+          <Route
+            element={
+              <ProtectedRoute
+                userSignIn={props.userSignIn}
+                loading={props.loading}
+              />
+            }
+          >
+            <Route element={<Layout />}>
+              {path.map((path) => {
+                return (
+                  <Route
+                    path={path}
+                    element={
+                      <Cards role={props.role} userSignIn={props.userSignIn} />
+                    }
+                  />
+                );
+              })}
+              {adminPath.map((path) => {
+                return <Route path={path} element={<LaunchCourse />} />;
+              })}
+            </Route>
+          </Route>
+          <Route path={"*"} element={<div>404 not found</div>}></Route>
         </Routes>
       </BrowserRouter>
     </>
   );
 }
 
-function Layout() {}
+function Layout() {
+  return (
+    <>
+      <Navbar />
+      <Outlet />
+    </>
+  );
+}
+
+export default Routing;
