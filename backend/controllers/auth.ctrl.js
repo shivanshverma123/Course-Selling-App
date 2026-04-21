@@ -163,7 +163,6 @@ let userStateData = async (req, res) => {
   //   id: req.currUser.id,
   // });
 
-  console.log("Yes Response Reaching here");
   res.json({
     userType: req.currUser.userType,
     isAuthenticated: true,

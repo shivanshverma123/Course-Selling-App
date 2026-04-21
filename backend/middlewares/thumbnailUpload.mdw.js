@@ -3,7 +3,6 @@ const path = require("path");
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    console.log("Inside Destination");
     if (file.fieldname === "thumbnailFile") {
       cb(null, path.join(__dirname, "..", "public", "thumbnails"));
     } else {
@@ -11,7 +10,6 @@ let storage = multer.diskStorage({
     }
   },
   filename: (req, file, cb) => {
-    console.log("Inside filename");
     let filename;
     if (file.fieldname === "thumbnailFile") {
       filename =

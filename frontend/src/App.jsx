@@ -24,8 +24,6 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // setLoading((prev) => true);
-    // console.log("Loading:-", loading);
     api.get("/auth/me").then((res) => {
       setUserSignin((prev) => res.data.isAuthenticated);
       setRole((prev) => res.data.userType || null);

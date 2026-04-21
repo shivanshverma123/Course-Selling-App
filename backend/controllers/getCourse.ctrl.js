@@ -2,7 +2,6 @@ const courseModel = require("../models/course.model");
 
 async function getAllCourses(req, res) {
   let userRole = req.currUser.userType;
-  console.log("userRole", userRole);
   let response;
   try {
     if (userRole === "admin") {
@@ -12,8 +11,6 @@ async function getAllCourses(req, res) {
     } else {
       response = await courseModel.find({});
     }
-    console.log("Yaha Request aarha hai");
-    console.log("iska response:-", response);
 
     return res.json({
       message: "Course Retreived Successfully",

@@ -38,9 +38,6 @@ export default function LaunchCourse(props) {
     courseDetail.details.forEach((det) => {
       if (det.instructors) {
         det.instructors.forEach((ins) => {
-          console.log("loggin name from ins:-", ins.name);
-          console.log("loggin name from ins:-", ins.dpfile);
-
           if (ins.name) {
             let ext = ins.dpfile.name.split(".").pop();
             formData.append(
@@ -62,7 +59,6 @@ export default function LaunchCourse(props) {
     // });
     let response = await api.post("/api/create-new-course", formData);
 
-    console.log("formData Response:-", response.data);
     props.setCourses((prev) => [...prev, courseDetail]);
     props.setPublishNewCourse(false);
   }
@@ -399,7 +395,6 @@ function InstructorDetail(props) {
   function saveInstructorDp(e) {
     props.setCourseDetail((prev) => {
       let dp = e.target.files[0];
-      console.log("Priting dp in fn:- ", dp);
       return {
         ...prev,
         details: prev.details.map((det) => {

@@ -7,7 +7,6 @@ async function newCourseLaunch(req, res) {
   let duration;
   let instructors = {};
   let courseDescription = [];
-  console.log("Logging req.Files:- ", req.files);
   details = details.forEach((det) => {
     if (det.duration) {
       duration = det.duration;

@@ -5,9 +5,6 @@ import { api } from "../App";
 export default function Cards(props) {
   const [deleteCourse, setDeleteCourse] = useState(false);
 
-  console.log("Printing 1:- ", props.role);
-  console.log("Printing 2:- ", props.userSignIn);
-
   async function deleteCourseRequest(e) {
     // let response = await fetch(
     //   `http://localhost:3000/api/deleteCourse/${props.id}`,

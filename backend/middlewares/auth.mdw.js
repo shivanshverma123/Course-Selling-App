@@ -15,7 +15,6 @@ function authenticate(req, res, next) {
       if (token) {
         let verifiedData = jwt.verify(token, jwt_secret);
         req.currUser = verifiedData;
-        console.log("Yaha print ho rha currUser Obj:-", req.currUser);
       } else {
         return res.status(403).json({
           message: "User not authenticated, Please signIn again.",
