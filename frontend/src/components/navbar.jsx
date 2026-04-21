@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import userLogo from "../assets/user.png";
+import { api } from "../App";
 
 export default function Navbar(props) {
   const [accountModelVisible, setAccountModelVisible] = useState(false);
 
-  function logoutUser() {
-    
+  async function logoutUser() {
+    await api.post("auth/logout");
     setAccountModelVisible(false);
     props.setUserSignin((prev) => false);
     props.setCourses([]);

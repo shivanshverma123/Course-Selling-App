@@ -60,6 +60,7 @@ function App() {
       userSignIn={userSignIn}
       loading={loading}
       setLoading={setLoading}
+      setCourses={setCourses}
     />
   );
 

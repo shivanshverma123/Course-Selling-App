@@ -63,7 +63,14 @@ function Routing(props) {
               />
             }
           >
-            <Route element={<Layout />}>
+            <Route
+              element={
+                <Layout
+                  setUserSignin={props.setUserSignin}
+                  setCourses={props.setCourses}
+                />
+              }
+            >
               {path.map((path) => {
                 return (
                   <Route
@@ -86,10 +93,13 @@ function Routing(props) {
   );
 }
 
-function Layout() {
+function Layout(props) {
   return (
     <>
-      <Navbar />
+      <Navbar
+        setUserSignin={props.setUserSignin}
+        setCourses={props.setCourses}
+      />
       <Outlet />
     </>
   );

@@ -170,8 +170,16 @@ let userStateData = async (req, res) => {
   });
 };
 
+let userLogout = (req, res) => {
+  res.clearCookie("token");
+  res.json({
+    message: "User logout Successfully",
+    isAuthenticated: false,
+  });
+};
 module.exports = {
   userSignin,
   userSignup,
   userStateData,
+  userLogout,
 };
